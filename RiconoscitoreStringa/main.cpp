@@ -3,24 +3,22 @@
 using namespace std;
 enum Stato
 {
-    iniziale, //0
-    errore, //1
-    segno,//2
-    parteIntera, //3
-    puntoP, //4
-    puntoI, //5
-    parteDecimale, //6
-    esponente, //7
-    segnoE, //8
-    parteEsponente, //9
-    finale //10
+    iniziale,       // 0
+    segno,          // 1
+    parteIntera,    // 2
+    puntoP,         // 3
+    puntoI,         // 4
+    parteDecimale,  // 5
+    esponente,      // 6
+    segnoE,         // 7
+    parteEsponente, // 8
+    finale          // 9
 };
 bool goodReal(string n)
 {
     Stato statoAttuale=iniziale;
     for(int i = 0;i<n.size();i++)
     {
-        cout<<statoAttuale<<"\t'"<<n[i]<<"' i= "<<i<<endl;
         switch(statoAttuale)
         {
             case iniziale:{
@@ -31,7 +29,7 @@ bool goodReal(string n)
                 }else if(n[i]<='9'&&n[i]>='0'){
                     statoAttuale=parteIntera;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
@@ -41,24 +39,23 @@ bool goodReal(string n)
                 }else if(n[i]<='9'&&n[i]>='0'){
                     statoAttuale=parteIntera;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
             case parteIntera:{
                 if(n[i]=='.'){
                     statoAttuale=puntoI;
-                }else if(n[i]<='9'&&n[i]>='0'){
-                    if(i==n.size()-1){
-                        statoAttuale=finale;
-                    }else{
-                        statoAttuale=parteIntera;
-                    }
-                }else if(n[i]=='E'||n[i]=='e')
+                }
+                else if(n[i]<='9'&&n[i]>='0'){
+                    statoAttuale=parteIntera;
+                }
+                else if(n[i]=='E'||n[i]=='e')
                 {
                     statoAttuale=esponente;
-                }else{
-                    statoAttuale=errore;
+                }
+                else{
+                    return false;
                 }
                 break;
             };
@@ -67,35 +64,28 @@ bool goodReal(string n)
                 {
                     statoAttuale=parteDecimale;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
             case puntoI:{
                 if(n[i]<='9'&&n[i]>='0'){
                     statoAttuale=parteDecimale;
-                }else if(i==n.size()-1){
-                    statoAttuale=finale;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
             case parteDecimale:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
-                    if(i==n.size()-1)
-                    {
-                        statoAttuale=finale;
-                    }else{
-                        statoAttuale=parteDecimale;
-                    }
+                    statoAttuale=parteDecimale;
                 }
                 else if(n[i]=='E'||n[i]=='e')
                 {
                     statoAttuale=esponente;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
@@ -107,7 +97,7 @@ bool goodReal(string n)
                 {
                     statoAttuale=parteEsponente;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
@@ -116,48 +106,38 @@ bool goodReal(string n)
                 {
                     statoAttuale=parteEsponente;
                 }else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
             case parteEsponente:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
-
-                    if(i==n.size()-1){
-                        statoAttuale=finale;
-                    }else{
-                        statoAttuale=parteEsponente;
-                    }
+                    statoAttuale=parteEsponente;
                 }
                 else{
-                    statoAttuale=errore;
+                    return false;
                 }
                 break;
             };
-            case errore:{
-                return false;
-            };
-            case finale:{
-                return true;
-            };
         }
-
+        i++;
     }
-    if(statoAttuale==errore){
-        return false;
-    }else if(statoAttuale==finale){
-        return true;
-    }
-
+    return true;
 }
 int main()
 {
     while(true)
     {
         string read;
+        cout<<"Inserisci il numero: ";
         cin>>read;
-        cout<<goodReal(read)<<endl;
+        if(goodReal(read))
+        {
+            cout<<"Il numero e' corretto!"<<endl;
+        }else{
+            cout<<"Il numero non e' corretto!"<<endl;
+        }
     }
     return 0;
 }
