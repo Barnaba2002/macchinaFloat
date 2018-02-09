@@ -13,7 +13,6 @@ enum Stato
     esponente,      // 6
     segnoE,         // 7
     parteEsponente, // 8
-    finale          // 9
 };
 bool goodReal(string n,float & numero)
 {
@@ -148,7 +147,7 @@ bool goodReal(string n,float & numero)
         }
     }
     if(!segE) esp*=-1;
-    numero = pow(numero,esp);
+    numero = numero*pow(10,esp);
     return true;
 }
 int main()
