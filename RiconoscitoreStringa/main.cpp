@@ -12,7 +12,6 @@ enum Stato
     esponente,      // 6
     segnoE,         // 7
     parteEsponente, // 8
-    finale          // 9
 };
 bool goodReal(string n)
 {
