@@ -121,7 +121,6 @@ bool goodReal(string n)
                 break;
             };
         }
-        i++;
     }
     return true;
 }
