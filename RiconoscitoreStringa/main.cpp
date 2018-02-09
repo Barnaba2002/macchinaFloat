@@ -18,13 +18,13 @@ enum Stato
 bool goodReal(string n,float & numero)
 {
     Stato statoAttuale=iniziale;
-    bool segN;
+    bool segN = true;
+    bool segE = true;
     long esp = 1;
     numero = 0;
     int decCount = 0;
     for(int i = 0;i<n.size();i++)
     {
-        cout<<statoAttuale<<"\t'"<<n[i]<<"' i= "<<i<<endl;
         switch(statoAttuale)
         {
             case iniziale:{
@@ -63,6 +63,7 @@ bool goodReal(string n,float & numero)
                 }
                 else if(n[i]=='E'||n[i]=='e')
                 {
+                    esp=0;
                     statoAttuale=esponente;
                 }
                 else{
@@ -97,6 +98,7 @@ bool goodReal(string n,float & numero)
                 }
                 else if(n[i]=='E'||n[i]=='e')
                 {
+                    esp=0;
                     statoAttuale=esponente;
                 }else{
                     return false;
@@ -106,10 +108,16 @@ bool goodReal(string n,float & numero)
             case esponente:{
                 if(n[i]=='+'||n[i]=='-')
                 {
+                    if(n[i]=='+')
+                    {
+                        segE=true;
+                    }else{
+                        segE=false;
+                    }
                     statoAttuale=segnoE;
                 }else if(n[i]<='9'&&n[i]>='0')
                 {
-
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
                     return false;
@@ -119,6 +127,7 @@ bool goodReal(string n,float & numero)
             case segnoE:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
                     return false;
@@ -128,6 +137,7 @@ bool goodReal(string n,float & numero)
             case parteEsponente:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }
                 else{
@@ -137,6 +147,8 @@ bool goodReal(string n,float & numero)
             };
         }
     }
+    if(!segE) esp*=-1;
+    numero = pow(numero,esp);
     return true;
 }
 int main()
