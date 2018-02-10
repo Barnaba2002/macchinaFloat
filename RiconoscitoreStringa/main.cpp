@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <math.h>
 using namespace std;
 enum Stato
 {
@@ -13,9 +14,14 @@ enum Stato
     segnoE,         // 7
     parteEsponente, // 8
 };
-bool goodReal(string n)
+bool goodReal(string n,float & numero)
 {
     Stato statoAttuale=iniziale;
+    bool segN = true;
+    bool segE = true;
+    long esp = 0;
+    numero = 0;
+    int decCount = 0;
     for(int i = 0;i<n.size();i++)
     {
         switch(statoAttuale)
@@ -23,9 +29,12 @@ bool goodReal(string n)
             case iniziale:{
                 if(n[i]=='+'||n[i]=='-'){
                     statoAttuale=segno;
+                    if(n[i]=='+') segN = true;
+                    else segN = false;
                 }else if(n[i]=='.'){
                     statoAttuale = puntoP;
                 }else if(n[i]<='9'&&n[i]>='0'){
+                    numero = numero*10 + n[i]-48;
                     statoAttuale=parteIntera;
                 }else{
                     return false;
@@ -36,6 +45,7 @@ bool goodReal(string n)
                 if(n[i]=='.'){
                     statoAttuale=puntoP;
                 }else if(n[i]<='9'&&n[i]>='0'){
+                    numero = numero*10 + n[i]-48;
                     statoAttuale=parteIntera;
                 }else{
                     return false;
@@ -47,10 +57,12 @@ bool goodReal(string n)
                     statoAttuale=puntoI;
                 }
                 else if(n[i]<='9'&&n[i]>='0'){
+                    numero = numero*10 + n[i]-48;
                     statoAttuale=parteIntera;
                 }
                 else if(n[i]=='E'||n[i]=='e')
                 {
+                    esp=0;
                     statoAttuale=esponente;
                 }
                 else{
@@ -61,6 +73,7 @@ bool goodReal(string n)
             case puntoP: {
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
                 }else{
                     return false;
@@ -69,8 +82,13 @@ bool goodReal(string n)
             };
             case puntoI:{
                 if(n[i]<='9'&&n[i]>='0'){
+                numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
-                }else{
+                }
+		else if(n[i]=='E'||n[i]=='e'){
+			esp=0;
+			statoAttuale=esponente;
+		}else{
                     return false;
                 }
                 break;
@@ -78,10 +96,12 @@ bool goodReal(string n)
             case parteDecimale:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
                 }
                 else if(n[i]=='E'||n[i]=='e')
                 {
+                    esp=0;
                     statoAttuale=esponente;
                 }else{
                     return false;
@@ -91,9 +111,16 @@ bool goodReal(string n)
             case esponente:{
                 if(n[i]=='+'||n[i]=='-')
                 {
+                    if(n[i]=='+')
+                    {
+                        segE=true;
+                    }else{
+                        segE=false;
+                    }
                     statoAttuale=segnoE;
                 }else if(n[i]<='9'&&n[i]>='0')
                 {
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
                     return false;
@@ -103,6 +130,7 @@ bool goodReal(string n)
             case segnoE:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
                     return false;
@@ -112,6 +140,7 @@ bool goodReal(string n)
             case parteEsponente:{
                 if(n[i]<='9'&&n[i]>='0')
                 {
+                    esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }
                 else{
@@ -121,6 +150,8 @@ bool goodReal(string n)
             };
         }
     }
+    if(!segE) esp*=-1;
+    numero = numero*pow(10,esp);
     return true;
 }
 int main()
@@ -128,11 +159,12 @@ int main()
     while(true)
     {
         string read;
+        float ritorno;
         cout<<"Inserisci il numero: ";
         cin>>read;
-        if(goodReal(read))
+        if(goodReal(read,ritorno))
         {
-            cout<<"Il numero e' corretto!"<<endl;
+            cout<<"Il numero "<<ritorno<<" e' corretto!"<<endl;
         }else{
             cout<<"Il numero non e' corretto!"<<endl;
         }
