@@ -19,7 +19,7 @@ bool goodReal(string n,float & numero)
     Stato statoAttuale=iniziale;
     bool segN = true;
     bool segE = true;
-    long esp = 1;
+    long esp = 0;
     numero = 0;
     int decCount = 0;
     for(int i = 0;i<n.size();i++)
