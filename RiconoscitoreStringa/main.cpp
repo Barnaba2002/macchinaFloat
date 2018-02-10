@@ -84,7 +84,11 @@ bool goodReal(string n,float & numero)
                 if(n[i]<='9'&&n[i]>='0'){
                 numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
-                }else{
+                }
+		else if(n[i]=='E'||n[i]=='e'){
+			esp=0;
+			statoAttuale=esponente;
+		}else{
                     return false;
                 }
                 break;
