@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include "Errore.h"
 using namespace std;
 enum Stato
 {
@@ -14,8 +15,9 @@ enum Stato
     segnoE,         // 7
     parteEsponente, // 8
 };
-bool goodReal(string n,float & numero)
+Errore goodReal(string n)
 {
+    float numero;
     Stato statoAttuale=iniziale;
     bool segN = true;
     bool segE = true;
@@ -37,7 +39,7 @@ bool goodReal(string n,float & numero)
                     numero = numero*10 + n[i]-48;
                     statoAttuale=parteIntera;
                 }else{
-                    return false;
+                    return Errore(0,i);
                 }
                 break;
             };
@@ -48,7 +50,11 @@ bool goodReal(string n,float & numero)
                     numero = numero*10 + n[i]-48;
                     statoAttuale=parteIntera;
                 }else{
-                    return false;
+                    if(i==n.size()-1){
+                        return Errore(1,i);
+                    }else{
+                        return Errore(0,i);
+                    }
                 }
                 break;
             };
@@ -66,7 +72,7 @@ bool goodReal(string n,float & numero)
                     statoAttuale=esponente;
                 }
                 else{
-                    return false;
+                    return Errore(3,i);
                 }
                 break;
             };
@@ -76,20 +82,24 @@ bool goodReal(string n,float & numero)
                     numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
                 }else{
-                    return false;
+                    if(i==n.size()-1){
+                        return Errore(1,i);
+                    }else{
+                        return Errore(0,i);
+                    }
                 }
                 break;
             };
             case puntoI:{
                 if(n[i]<='9'&&n[i]>='0'){
-                numero = numero + (n[i]-48)/pow(10,++decCount);
+                    numero = numero + (n[i]-48)/pow(10,++decCount);
                     statoAttuale=parteDecimale;
                 }
-		else if(n[i]=='E'||n[i]=='e'){
-			esp=0;
-			statoAttuale=esponente;
-		}else{
-                    return false;
+                else if(n[i]=='E'||n[i]=='e'){
+                    esp=0;
+                    statoAttuale=esponente;
+                }else{
+                    return Errore(4,i);
                 }
                 break;
             };
@@ -104,7 +114,7 @@ bool goodReal(string n,float & numero)
                     esp=0;
                     statoAttuale=esponente;
                 }else{
-                    return false;
+                    return Errore(4,i);
                 }
                 break;
             };
@@ -123,7 +133,7 @@ bool goodReal(string n,float & numero)
                     esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
-                    return false;
+                    return Errore(2,i);
                 }
                 break;
             };
@@ -133,7 +143,7 @@ bool goodReal(string n,float & numero)
                     esp = esp*10+n[i]-48;
                     statoAttuale=parteEsponente;
                 }else{
-                    return false;
+                    return Errore(2,i);
                 }
                 break;
             };
@@ -144,7 +154,7 @@ bool goodReal(string n,float & numero)
                     statoAttuale=parteEsponente;
                 }
                 else{
-                    return false;
+                    return Errore(2,i);
                 }
                 break;
             };
@@ -152,21 +162,24 @@ bool goodReal(string n,float & numero)
     }
     if(!segE) esp*=-1;
     numero = numero*pow(10,esp);
-    return true;
+    return Errore(numero);
 }
+
 int main()
 {
+    Errore err(0);
     while(true)
     {
         string read;
         float ritorno;
         cout<<"Inserisci il numero: ";
         cin>>read;
-        if(goodReal(read,ritorno))
+        err = goodReal(read);
+        if(err.isErrore())
         {
-            cout<<"Il numero "<<ritorno<<" e' corretto!"<<endl;
+            cout<<err.toString()<<" alla posizione "<<err.getPosErr()<<endl;
         }else{
-            cout<<"Il numero non e' corretto!"<<endl;
+            cout<<err.toFloat()<<endl;
         }
     }
     return 0;
