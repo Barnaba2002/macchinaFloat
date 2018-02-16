@@ -20,3 +20,15 @@
 1518781505 c:\users\barnaba\documents\github\macchinafloat\riconoscitorestringa\include\errore.h
 	<string>
 
+1518818875 source:c:\users\capa\documents\macchinafloat\riconoscitorestringa\errore.cpp
+	"Errore.h"
+
+1518818875 c:\users\capa\documents\macchinafloat\riconoscitorestringa\errore.h
+	<string>
+
+1518818875 source:c:\users\capa\documents\macchinafloat\riconoscitorestringa\main.cpp
+	<iostream>
+	<string>
+	<math.h>
+	"Errore.h"
+
